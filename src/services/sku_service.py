@@ -20,6 +20,20 @@ from src.api.schemas.skus import (
 from src.models.sequence_dataset import PanelDataContainer
 
 
+def _safe_val(v: Any) -> Any:
+    """Helper to convert NaN, infinite, or pd.NA values to None for compliant JSON serialization."""
+    if v is None:
+        return None
+    if isinstance(v, (float, np.floating)) and np.isnan(v):
+        return None
+    try:
+        if pd.isna(v):
+            return None
+    except Exception:
+        pass
+    return v
+
+
 class SKUService:
     """Service handling catalog lookup, metadata enrichment, and demand history queries."""
 
@@ -32,10 +46,17 @@ class SKUService:
         if self._metadata_df is None:
             summary_path = settings.DATA_DIR / 'processed' / 'sku_catalog_summary.csv'
             if summary_path.exists():
-                logger.info(f'Loading precomputed SKU catalog from {summary_path}...')
-                self._metadata_df = pd.read_csv(summary_path, dtype={'sku_id': str})
-                self._sku_dict = {str(row['sku_id']): row.to_dict() for _, row in self._metadata_df.iterrows()}
-                logger.info(f'SKUService catalog indexed from precomputed summary: {len(self._sku_dict)} SKUs.')
+                logger.info(f"Loading precomputed SKU catalog from {summary_path}...")
+                self._metadata_df = pd.read_csv(summary_path, dtype={"sku_id": str})
+                self._metadata_df = self._metadata_df.replace({np.nan: None})
+                self._sku_dict = {
+                    str(row["sku_id"]): {
+                        k: (None if (isinstance(v, float) and np.isnan(v)) or pd.isna(v) else v)
+                        for k, v in row.to_dict().items()
+                    }
+                    for _, row in self._metadata_df.iterrows()
+                }
+                logger.info(f"SKUService catalog indexed from precomputed summary: {len(self._sku_dict)} SKUs.")
                 return
 
             if self._panel is None:
@@ -151,18 +172,18 @@ class SKUService:
 
         items = [
             SKUSummary(
-                sku_id=r["sku_id"],
-                cohort_tier=r["cohort_tier"],
-                abc_demand_class=r["abc_demand_class"],
-                abc_value_class=r["abc_value_class"],
-                xyz_variability_class=r["xyz_variability_class"],
-                sbc_regime=r["sbc_regime"],
-                total_demand_units=r["total_demand_units"],
-                avg_weekly_demand=r["avg_weekly_demand"],
-                zero_weeks_count=r["zero_weeks_count"],
-                active_weeks_count=r["active_weeks_count"],
-                intermittency_ratio=r["intermittency_ratio"],
-                last_observed_price=r["last_observed_price"]
+                sku_id=str(r["sku_id"]),
+                cohort_tier=str(r["cohort_tier"]),
+                abc_demand_class=_safe_val(r["abc_demand_class"]),
+                abc_value_class=_safe_val(r["abc_value_class"]),
+                xyz_variability_class=_safe_val(r["xyz_variability_class"]),
+                sbc_regime=_safe_val(r["sbc_regime"]),
+                total_demand_units=float(r["total_demand_units"]),
+                avg_weekly_demand=float(r["avg_weekly_demand"]),
+                zero_weeks_count=int(r["zero_weeks_count"]),
+                active_weeks_count=int(r["active_weeks_count"]),
+                intermittency_ratio=float(r["intermittency_ratio"]),
+                last_observed_price=_safe_val(r["last_observed_price"])
             )
             for _, r in page_df.iterrows()
         ]
@@ -176,22 +197,22 @@ class SKUService:
             raise SKUNotFoundException(sku_id)
 
         return SKUDetailResponse(
-            sku_id=data["sku_id"],
-            cohort_tier=data["cohort_tier"],
-            abc_demand_class=data["abc_demand_class"],
-            abc_value_class=data["abc_value_class"],
-            xyz_variability_class=data["xyz_variability_class"],
-            sbc_regime=data["sbc_regime"],
-            adi=data["adi"],
-            cv2=data["cv2"],
-            first_observed_week=data["first_observed_week"],
-            last_observed_week=data["last_observed_week"],
-            total_weeks_in_catalog=data["total_weeks_in_catalog"],
-            total_demand_units=data["total_demand_units"],
-            avg_weekly_demand=data["avg_weekly_demand"],
-            zero_demand_weeks=data["zero_weeks_count"],
-            zero_rate=data["intermittency_ratio"],
-            latest_unit_price=data["last_observed_price"],
+            sku_id=str(data["sku_id"]),
+            cohort_tier=str(data["cohort_tier"]),
+            abc_demand_class=_safe_val(data.get("abc_demand_class")),
+            abc_value_class=_safe_val(data.get("abc_value_class")),
+            xyz_variability_class=_safe_val(data.get("xyz_variability_class")),
+            sbc_regime=_safe_val(data.get("sbc_regime")),
+            adi=_safe_val(data.get("adi")),
+            cv2=_safe_val(data.get("cv2")),
+            first_observed_week=str(data["first_observed_week"]),
+            last_observed_week=str(data["last_observed_week"]),
+            total_weeks_in_catalog=int(data["total_weeks_in_catalog"]),
+            total_demand_units=float(data["total_demand_units"]),
+            avg_weekly_demand=float(data["avg_weekly_demand"]),
+            zero_demand_weeks=int(data["zero_weeks_count"]),
+            zero_rate=float(data["intermittency_ratio"]),
+            latest_unit_price=_safe_val(data.get("last_observed_price")),
             serving_eligible=True
         )
 

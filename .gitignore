@@ -92,6 +92,8 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 desktop.ini
+~$*
+*.~*
 *.tmp
 *.bak
 *.swp
@@ -139,3 +141,6 @@ docs/
 !data/processed/sku_week_demand_v1_1.csv
 !data/processed/feature_manifest_v1_2.json
 !data/processed/train_val_test_split_v1_1.json
+
+# Temporary evaluation draft
+TEAM_Contribution_Evaluation_TiengViet.xlsx
