@@ -107,13 +107,26 @@ data/raw/*.xlsx
 *.sql
 *.zip
 
-# 8. Scratch Reading Scripts & Prompts
+# 8. Scratch Reading Scripts, Temporary Files & Notes
 ANTIGRAVITY_*
 read_docx*.py
 read_pdfs.py
+scratch/
+*.log
+tests_run.log
+screenshots_to_add/
+BAO_CAO_DOI_CHIEU_DE_CUONG_VA_KE_HOACH_HANH_DONG.md
+pyqt6-mysql-integration.md
+tests/audit_duplicates.py
+tests/audit_non_merch.py
+tests/check_pandas_weekly.py
+tests/fast_duplicate_audit.py
 
-# 9. Course Syllabus & Reference Documentation
+# 9. Course Syllabus & Local Documentation
 docs/
+*.pdf
+*.docx
+!reports/*.docx
 
 
 

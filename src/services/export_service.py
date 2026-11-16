@@ -6,6 +6,7 @@ Enforces atomic writes, cryptographic SHA-256 tracking, and path containment sec
 import csv
 import hashlib
 from pathlib import Path
+import shutil
 import tempfile
 from typing import Any, Dict, List, Optional
 import uuid
@@ -140,7 +141,7 @@ class ExportService:
         content_bytes = tmp_path.read_bytes()
         sha256_hash = hashlib.sha256(content_bytes).hexdigest()
         file_size = len(content_bytes)
-        tmp_path.replace(target_path)
+        shutil.move(str(tmp_path), str(target_path))
 
         return len(records), file_size, sha256_hash
 
@@ -223,7 +224,7 @@ class ExportService:
         content_bytes = tmp_path.read_bytes()
         sha256_hash = hashlib.sha256(content_bytes).hexdigest()
         file_size = len(content_bytes)
-        tmp_path.replace(target_path)
+        shutil.move(str(tmp_path), str(target_path))
 
         return len(records), file_size, sha256_hash
 
