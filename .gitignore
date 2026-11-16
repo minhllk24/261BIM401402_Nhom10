@@ -144,3 +144,7 @@ docs/
 
 # Temporary evaluation draft
 TEAM_Contribution_Evaluation_TiengViet.xlsx
+
+# Reports directory excluded from git
+reports/
+*.docx

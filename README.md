@@ -1,4 +1,8 @@
-# 🚀 Retail SKU-Week Demand Forecasting & Inventory Planning Platform
+# 🚀 261BIM401402_Nhóm 10: Retail SKU-Week Demand Forecasting & Inventory Planning Platform
+
+> **Đồ án môn học:** Machine Learning  
+> **Lớp học phần:** 261BIM401402  
+> **Nhóm thực hiện:** Nhóm 10  
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -143,7 +147,7 @@ Hệ thống tích hợp thuật toán mô phỏng chính sách đặt hàng đ�
 ## 📂 6. Cấu trúc Thư mục Kho mã nguồn
 
 ```
-Machine_Learning_Backend/
+261BIM401402_Nhóm 10/
 ├── src/                                # 🧠 MÃ NGUỒN CỐT LÕI HỌC MÁY & BACKEND FASTAPI
 │   ├── api/                            # FastAPI Application (29 RESTful Endpoints)
 │   │   ├── routes/                     # auth, dashboard, database, forecasts, models, planning, skus
@@ -238,4 +242,4 @@ python -m pytest tests/ -v
 * **Hợp đồng API & Phân quyền RBAC (`tests/api/`):** Kiểm tra phân quyền truy cập endpoint (Analyst / Planner) và tính toàn vẹn dữ liệu SQLite / MySQL.
 
 ---
-*Kho mã nguồn được xây dựng và duy trì bởi Nhóm Đồ án Học máy — Khóa K24 — 2026.*
+*Kho mã nguồn được xây dựng và duy trì bởi 261BIM401402_Nhóm 10 — Khóa K24 — 2026.*
